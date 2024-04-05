@@ -116,53 +116,6 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
         }
     }
 
-    /**
-     * This method is used to generate records based on the imported data
-     * these records will then be used later to generate the Goobi processes
-     */
-    @Override
-    public List<Record> generateRecordsFromFile() {
-        if (StringUtils.isBlank(workflowTitle)) {
-            workflowTitle = form.getTemplate().getTitel();
-        }
-        readConfig();
-
-        // the list where the records are stored
-        List<Record> recordList = new ArrayList<>();
-
-        try {
-            // read the file in to generate the records
-            String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        
-            // run through the content line by line
-            String lines[] = content.split("\\r?\\n");
-
-            // generate a record for each process to be created
-            for (String line : lines) {
-                
-                // Split the string and generate a hashmap for all needed metadata
-                String fields[] = line.split(";");
-                HashMap<String, String> map = new HashMap<String, String>();
-                String id = fields[0].trim();
-                
-                // put all fields into the hashmap
-                map.put("ID", id);
-                
-                // create a record and put the hashmap with data to it
-                Record r = new Record();
-                r.setId(id);
-                r.setObject(map);
-                recordList.add(r);                
-            }
-        
-        } catch (IOException e) {
-            log.error("Error while reading the uploaded file", e);
-        }
-
-        // return the list of all generated records
-        return recordList;
-    }
-
     @Override
     public List<ImportObject> generateFiles(List<Record> records) {
         List<ImportObject> importedRecords = new LinkedList<>();
@@ -244,18 +197,45 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
         return runAsGoobiScript;
     }
 
+    @Override
+	public List<Record> splitRecords(String content) {
+		if (StringUtils.isBlank(workflowTitle)) {
+			workflowTitle = form.getTemplate().getTitel();
+		}
+		readConfig();
+		
+		// the list where the records are stored
+		List<Record> recordList = new ArrayList<>();
+		
+		// run through the content line by line
+		String lines[] = content.split("\\r?\\n");
+		
+		// generate a record for each process to be created
+		for (String line : lines) {
+			Record r = new Record();
+			r.setId(line);
+			recordList.add(r);
+		}
+		
+		// return the list of all generated records
+		return recordList;
+	}
+    
     /* *************************************************************** */
     /*                                                                 */
     /* the following methods are mostly not needed for typical imports */
     /*                                                                 */
     /* *************************************************************** */
 
+    /**
+     * This method is used to generate records based on the imported data
+     * these records will then be used later to generate the Goobi processes
+     */
     @Override
-    public List<Record> splitRecords(String string) {
-        List<Record> answer = new ArrayList<>();
-        return answer;
+    public List<Record> generateRecordsFromFile() {
+       return null;
     }
-
+    
     @Override
     public List<String> splitIds(String ids) {
         return null;
