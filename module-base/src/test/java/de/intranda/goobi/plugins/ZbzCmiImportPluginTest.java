@@ -69,7 +69,7 @@ public class ZbzCmiImportPluginTest {
     public void testConstructor() {
         ZbzCmiImportPlugin plugin = new ZbzCmiImportPlugin();
         assertNotNull(plugin);
-        assertEquals(ImportType.FILE, plugin.getImportTypes().get(0));
+        assertEquals(ImportType.Record, plugin.getImportTypes().get(0));
         plugin.setImportFolder(tempFolder.getAbsolutePath());
     }
 
