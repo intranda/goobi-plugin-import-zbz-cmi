@@ -43,11 +43,44 @@ pipeline {
       }
     }
 
+    stage('deploy-snapshot-libs') {
+      when {
+        anyOf {
+          branch 'develop'
+        }
+      }
+      steps {
+        script {
+          if (fileExists('module-lib/pom.xml')) {
+            sh 'cat pom.xml | grep "SNAPSHOT"'
+            sh 'mvn -N deploy'
+            sh 'mvn -f module-lib/pom.xml deploy'
+          }
+        }
+      }
+    }
+
+    stage('deploy-release-libs') {
+      when {
+        anyOf {
+          branch 'master'
+        }
+      }
+      steps {
+        script {
+          if (fileExists('module-lib/pom.xml')) {
+            sh 'cat pom.xml | grep "SNAPSHOT" || true'
+            sh 'mvn -N deploy'
+            sh 'mvn -f module-lib/pom.xml deploy'
+          }
+        }
+      }
+    }
   }
 
   post {
     always {
-      junit "**/target/surefire-reports/*.xml"
+      junit allowEmptyResults: true, testResults: "**/target/surefire-reports/*.xml"
       step([
         $class           : 'JacocoPublisher',
         execPattern      : '**/target/jacoco.exec',
@@ -62,7 +95,7 @@ pipeline {
       dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
     success {
-      archiveArtifacts artifacts: '**/target/*.jar, */plugin_*.xml, plugin_*.xml', fingerprint: true, onlyIfSuccessful: true
+      archiveArtifacts artifacts: '**/target/*.jar, install/*', fingerprint: true, onlyIfSuccessful: true
     }
     changed {
       emailext(
