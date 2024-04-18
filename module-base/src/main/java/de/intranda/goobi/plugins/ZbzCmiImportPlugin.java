@@ -1,10 +1,7 @@
 package de.intranda.goobi.plugins;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +9,6 @@ import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
@@ -34,19 +30,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
-import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
-import ugh.dl.DocStructType;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
-import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
-import ugh.fileformats.mets.MetsMods;
 
 @PluginImplementation
 @Log4j2
@@ -85,7 +75,7 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
     private IOpacPlugin opacPlugin = null;
     private String catalogue = "";
     private String searchField = "";
-    
+
     /**
      * define what kind of import plugin this is
      */
@@ -137,32 +127,20 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
                             anchor = logical;
                             logical = logical.getAllChildren().get(0);
                         }
-                        if (!record.getCollections().isEmpty()) {
-                            for (String collection : record.getCollections()) {
-                                Metadata md = new Metadata(prefs.getMetadataTypeByName("singleDigCollection"));
-                                md.setValue(collection);
-                                logical.addMetadata(md);
-                                if (anchor != null) {
-                                    md = new Metadata(prefs.getMetadataTypeByName("singleDigCollection"));
-                                    md.setValue(collection);
-                                    anchor.addMetadata(md);
-                                }
-                            }
-                        }
-                     
+
                         // and add all collections that where selected
                         for (String colItem : form.getDigitalCollections()) {
                             Metadata mdColl = new Metadata(prefs.getMetadataTypeByName("singleDigCollection"));
                             mdColl.setValue(colItem);
                             logical.addMetadata(mdColl);
-                            
+
                             if (anchor != null) {
-                            	mdColl = new Metadata(prefs.getMetadataTypeByName("singleDigCollection"));
-                            	mdColl.setValue(colItem);
+                                mdColl = new Metadata(prefs.getMetadataTypeByName("singleDigCollection"));
+                                mdColl.setValue(colItem);
                                 anchor.addMetadata(mdColl);
                             }
                         }
-                        
+
                         io.setProcessTitle(identifier);
                         fileformat.write(importFolder + record.getId() + ".xml");
                         io.setMetsFilename(importFolder + record.getId() + ".xml");
@@ -175,11 +153,7 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
                         io.setProcessTitle(identifier);
                     }
 
-                } catch (ImportPluginException e) {
-                    log.error(e);
-                } catch (PreferencesException | MetadataTypeNotAllowedException e) {
-                    log.error(e);
-                } catch (WriteException e) {
+                } catch (ImportPluginException | PreferencesException | MetadataTypeNotAllowedException | WriteException e) {
                     log.error(e);
                 }
             }
@@ -198,29 +172,29 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
     }
 
     @Override
-	public List<Record> splitRecords(String content) {
-		if (StringUtils.isBlank(workflowTitle)) {
-			workflowTitle = form.getTemplate().getTitel();
-		}
-		readConfig();
-		
-		// the list where the records are stored
-		List<Record> recordList = new ArrayList<>();
-		
-		// run through the content line by line
-		String lines[] = content.split("\\r?\\n");
-		
-		// generate a record for each process to be created
-		for (String line : lines) {
-			Record r = new Record();
-			r.setId(line);
-			recordList.add(r);
-		}
-		
-		// return the list of all generated records
-		return recordList;
-	}
-    
+    public List<Record> splitRecords(String content) {
+        if (StringUtils.isBlank(workflowTitle)) {
+            workflowTitle = form.getTemplate().getTitel();
+        }
+        readConfig();
+
+        // the list where the records are stored
+        List<Record> recordList = new ArrayList<>();
+
+        // run through the content line by line
+        String lines[] = content.split("\\r?\\n");
+
+        // generate a record for each process to be created
+        for (String line : lines) {
+            Record r = new Record();
+            r.setId(line);
+            recordList.add(r);
+        }
+
+        // return the list of all generated records
+        return recordList;
+    }
+
     /* *************************************************************** */
     /*                                                                 */
     /* the following methods are mostly not needed for typical imports */
@@ -228,14 +202,13 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
     /* *************************************************************** */
 
     /**
-     * This method is used to generate records based on the imported data
-     * these records will then be used later to generate the Goobi processes
+     * This method is used to generate records based on the imported data these records will then be used later to generate the Goobi processes
      */
     @Override
     public List<Record> generateRecordsFromFile() {
-       return null;
+        return null;
     }
-    
+
     @Override
     public List<String> splitIds(String ids) {
         return null;
@@ -300,8 +273,8 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
 
     @Override
     public Fileformat convertData() throws ImportPluginException {
-    	readConfig();
-    	fileformat = null;
+        readConfig();
+        fileformat = null;
         ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(catalogue);
         if (opacPlugin == null) {
             opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
