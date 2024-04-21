@@ -22,6 +22,7 @@ import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.properties.ImportProperty;
 
 import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.exceptions.ImportPluginException;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
@@ -75,6 +76,7 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
     private IOpacPlugin opacPlugin = null;
     private String catalogue = "";
     private String searchField = "";
+    private String ats = null;
 
     /**
      * define what kind of import plugin this is
@@ -141,7 +143,24 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
                             }
                         }
 
-                        io.setProcessTitle(identifier);
+                        // try to get information for complete process title
+                        String mytitle = identifier;
+                        // add shelfmark
+                        String shelfmark = getMetdata(logical, "shelfmarksource");
+                        if (StringUtils.isNotBlank(shelfmark)) {
+                            mytitle += "_" + shelfmark;
+                        }
+                        // add ats/tsl
+                        if (StringUtils.isNotBlank(ats)) {
+                            mytitle = ats + "_" + mytitle;
+                        }
+
+                        // remove non-ascii characters in process title
+                        String regex = ConfigurationHelper.getInstance().getProcessTitleReplacementRegex();
+                        mytitle = mytitle.replaceAll(regex, "_");
+
+                        io.setProcessTitle(mytitle);
+
                         fileformat.write(importFolder + record.getId() + ".xml");
                         io.setMetsFilename(importFolder + record.getId() + ".xml");
                         io.setImportReturnValue(ImportReturnValue.ExportFinished);
@@ -281,10 +300,27 @@ public class ZbzCmiImportPlugin implements IImportPluginVersion2 {
         }
         try {
             fileformat = opacPlugin.search(searchField, identifier, coc, prefs);
+            ats = opacPlugin.getAtstsl();
         } catch (Exception e) {
             throw new ImportPluginException(e);
         }
         return fileformat;
+    }
+
+    /**
+     * get a specific metadata from given docstruct
+     * 
+     * @param ds docstruct to use
+     * @param field metadata field to search for
+     */
+    private String getMetdata(DocStruct ds, String field) {
+        // run through all metadata to find the right one
+        for (Metadata md : ds.getAllMetadata()) {
+            if (md.getType().getName().equals(field)) {
+                return md.getValue();
+            }
+        }
+        return "";
     }
 
 }
