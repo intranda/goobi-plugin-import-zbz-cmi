@@ -3,11 +3,11 @@
   <parent>
     <groupId>io.goobi.workflow</groupId>
     <artifactId>workflow-base</artifactId>
-    <version>24.03-SNAPSHOT</version>
+    <version>24.04.30</version>
     <relativePath />
   </parent>
   <groupId>io.goobi.workflow.plugin</groupId>
-  <artifactId>plugin-import-kick-start</artifactId>
+  <artifactId>plugin-import-zbz-cmi</artifactId>
   <packaging>pom</packaging>
   <modules>
     <module>module-base</module>
