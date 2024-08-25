@@ -12,11 +12,11 @@ More information about the functionality of this plugin and the complete documen
 
 Detail                      | Description
 --------------------------- | ----------------------
-**Plugin identifier**       | -
+**Plugin identifier**       | intranda_import_zbz_cmi
 **Plugin type**             | import
 **Licence**                 | GPL 2.0 or newer
-**Documentation (German)**  | This plugin is not yet documented.
-**Documentation (English)** | This plugin is not yet documented.
+**Documentation (German)**  | https://docs.goobi.io/workflow-plugins/v/eng/import/goobi-plugin-import-zbz-cmi
+**Documentation (English)** | https://docs.goobi.io/workflow-plugins/v/ger/import/goobi-plugin-import-zbz-cmi
 
 ## Goobi details
 
