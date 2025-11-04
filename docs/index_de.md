@@ -3,6 +3,10 @@ title: Datenimport mit CMI-Katalogabfrage für die Zentralbibliothek Zürich
 identifier: intranda_import_zbz_cmi
 description: Dieses Import Plugin für Goobi workflow erlaubt das Einspielen von Daten mit anschließender Katalogabfrage aus CMI, wie es für die Zentralbibliothek Zürich benötigt wird.
 published: true
+keywords:
+    - Goobi workflow
+    - Plugin
+    - Import Plugin
 ---
 
 ## Einführung
