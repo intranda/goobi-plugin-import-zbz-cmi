@@ -15,8 +15,8 @@ Detail                      | Description
 **Plugin identifier**       | intranda_import_zbz_cmi
 **Plugin type**             | import
 **Licence**                 | GPL 2.0 or newer
-**Documentation (German)**  | https://docs.goobi.io/workflow-plugins/v/ger/import/goobi-plugin-import-zbz-cmi
-**Documentation (English)** | https://docs.goobi.io/workflow-plugins/v/eng/import/goobi-plugin-import-zbz-cmi
+**Documentation (German)**  | https://docs.goobi.io/de/workflow/plugins/import/goobi-plugin-import-zbz-cmi
+**Documentation (English)** | https://docs.goobi.io/en/workflow/plugins/import/goobi-plugin-import-zbz-cmi
 
 ## Goobi details
 
