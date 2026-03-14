@@ -48,7 +48,7 @@ Die folgende Tabelle enthält eine Zusammenstellung der Parameter und ihrer Besc
 
 Parameter               | Erläuterung
 ------------------------|------------------------------------
-`template`              | Hiermit kann festgelegt werden für welche Produktionsvorlabe der jeweilige `config`-Block gelten soll. 
+`template`              | Hiermit kann festgelegt werden für welche Produktionsvorlage der jeweilige `config`-Block gelten soll. 
 `runAsGoobiScript`      | Mit diesem Parameter kann festgelegt werden, ob der Import als GoobiScript im Hintergrund stattfinden soll.
 `catalogue`             | Hier wird definiert, welcher Katalog für die Abfrage verwendet werden soll. Diese muss innerhalb der Konfigurationsdatei `goobi_opac.xml` definiert worden sein.
 `searchField`           | Mit diesem Parameter wird festgelegt, in welchem Feld des Katalogs die Suche nach dem Identifier erfolgen soll.
